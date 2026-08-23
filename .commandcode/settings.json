@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(node -v 2>/dev/null; echo \"---\"; corepack --version 2>/dev/null; echo \"---\"; docker --version 2>/dev/null || echo \"no docker\"; echo \"---\"; brew --version 2>/dev/null | head -1 || echo \"no brew\"; echo \"---\"; psql --version 2>/dev/null || echo \"no psql\"; echo \"---\"; redis-server --version 2>/dev/null || echo \"no redis\")",
+      "Shell(brew:*)",
+      "Shell(sleep:*)",
+      "Shell(/opt/homebrew/opt/postgresql@16/bin/pg_isready:*)",
+      "Shell(export:*)",
+      "Shell(if:*)",
+      "Shell(then:*)",
+      "Shell(else:*)",
+      "Shell(fi:*)",
+      "Shell(psql:*)",
+      "Shell(redis-cli:*)",
+      "Shell(corepack:*)",
+      "Shell(yarn:*)",
+      "Shell(ls:*)",
+      "Shell(pgrep:*)",
+      "Shell(cp:*)",
+      "Shell(npx nx database:reset twenty-server 2>&1)",
+      "Shell(for i in $(seq 1 90); do code=$(curl -s -o /dev/null -w \"%{http_code}\" --max-time 3 http://localhost:3000/healthz 2>/dev/null); [ \"$code\" != \"000\" ] && echo \"API :3000 → HTTP $code\" && break; sleep 1; done; for i in $(seq 1 60); do code=$(curl -s -o /dev/null -w \"%{http_code}\" --max-time 3 http://localhost:3001 2>/dev/null); [ \"$code\" != \"000\" ] && echo \"FRONT :3001 → HTTP $code\" && break; sleep 1; done)",
+      "Shell(curl -s --max-time 10 -X POST http://localhost:3000/graphql -H Content-Type: application/json -d {\"query\":\"{ __typename }\"})",
+      "Shell(curl -s -i --max-time 10 -X POST http://localhost:3000/graphql -H Content-Type: application/json -d {\"query\":\"query { __typename }\"})",
+      "Shell(sed:*)",
+      "Shell(kill:*)",
+      "Shell(lsof:*)",
+      "Shell(mv:*)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}

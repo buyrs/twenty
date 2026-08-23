@@ -1,0 +1,19 @@
+appId: com.twenty.native
+productName: Twenty
+copyright: AGPL-3.0
+directories:
+  output: dist-native
+files:
+  - dist/**
+  - package.json
+extraResources:
+  - from: resources
+    to: resources
+mac:
+  category: public.app-category.business
+  target:
+    - dmg
+    - zip
+  artifactName: Twenty-${version}-${arch}.${ext}
+  # Local builds are unsigned; signing/notarization is out of scope for v1.
+  identity: null

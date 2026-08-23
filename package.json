@@ -75,9 +75,12 @@
   "nx": {},
   "scripts": {
     "docs:generate": "tsx packages/twenty-docs/scripts/generate-docs-json.ts",
-    "docs:generate-navigation-template": "tsx packages/twenty-docs/scripts/generate-navigation-template.ts",
+    "docs:generate-navigation-template": "tsx packages/twenty-docs/scripts/generate-documentation-paths.ts",
     "docs:generate-paths": "tsx packages/twenty-docs/scripts/generate-documentation-paths.ts",
     "docs:prune-orphans": "tsx packages/twenty-docs/scripts/prune-orphan-translations.ts",
+    "native:build": "yarn workspace twenty-native run build",
+    "native:package": "yarn workspace twenty-native run package",
+    "native:run": "yarn workspace twenty-native run start",
     "start": "npx concurrently --kill-others 'npx nx run-many -t start -p twenty-server twenty-front' 'npx wait-on tcp:3000 && npx nx run twenty-server:worker'"
   },
   "workspaces": {
@@ -99,7 +102,8 @@
       "packages/create-twenty-app",
       "packages/twenty-codex-plugin",
       "packages/twenty-oxlint-rules",
-      "packages/twenty-claude-skills"
+      "packages/twenty-claude-skills",
+      "packages/twenty-native"
     ]
   },
   "prettier": {

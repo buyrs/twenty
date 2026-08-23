@@ -1,0 +1,23 @@
+{
+  "name": "twenty-native",
+  "description": "Electron supervisor running Twenty with embedded PostgreSQL and Redis",
+  "author": "Twenty",
+  "private": true,
+  "version": "0.1.0",
+  "license": "AGPL-3.0",
+  "main": "dist/main.js",
+  "scripts": {
+    "compile": "tsc -p tsconfig.json",
+    "fetch:binaries": "node scripts/fetch-binaries.mjs",
+    "assemble": "node scripts/assemble.mjs",
+    "build": "yarn compile && yarn fetch:binaries && yarn assemble",
+    "start": "yarn compile && electron .",
+    "package": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "electron": "43.4.1",
+    "electron-builder": "^26.15.3",
+    "typescript": "^5.9.3"
+  }
+}
