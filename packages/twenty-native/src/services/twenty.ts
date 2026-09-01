@@ -31,12 +31,16 @@ export const buildServerEnvironment = (
   return {
     ...process.env,
     NODE_ENV: 'production',
-    PORT: String(configuration.serverPort),
+    // The server listens on NODE_PORT (main.ts reads the config variable),
+    // not PORT; setting PORT would silently fall back to the 3000 default.
+    NODE_PORT: String(configuration.serverPort),
     PG_DATABASE_URL: `postgres://postgres:postgres@127.0.0.1:${configuration.postgresPort}/default`,
     REDIS_URL: `redis://127.0.0.1:${configuration.redisPort}`,
     APP_SECRET: configuration.appSecret,
     APP_VERSION: options.appVersion,
-    SIGN_IN_PREFILLED: 'true',
+    // Prefill hardcodes the seeded tim@apple.dev credentials in the front; the
+    // native app swaps that seed for the local admin (see swap below).
+    SIGN_IN_PREFILLED: 'false',
     FRONTEND_URL: configuration.serverUrl,
     SERVER_URL: configuration.serverUrl,
     // The ClickHouse event sink has no embedded server to talk to.
@@ -71,6 +75,79 @@ const runBestEffortServerCommand = async (
   } catch (error) {
     console.warn(
       `[twenty-native] best-effort command failed: ${args.join(' ')}`,
+      error,
+    );
+  }
+};
+
+// The dev seeder provisions tim@apple.dev as workspace admin; the native app is
+// meant to be entered with the local admin credentials instead. Guarded on the
+// seeded email so the swap no-ops once applied or if the account was renamed.
+const SEEDED_ADMIN_ID = '20202020-9e3b-46d4-a556-88b9ddc2b034';
+const ADMIN_EMAIL = 'jules@passlink.fr';
+// bcrypt hash of the local admin password, cost 10 (same as hashPassword).
+const ADMIN_PASSWORD_HASH =
+  '$2b$10$6Ct.iALzdoL9zpXML31gvujO/CT1sqvOUzxCk0mvYwtF8nVC.j7JC';
+
+const buildAdminCredentialSwapSql = (): string => `
+DO $$
+DECLARE workspace_schema text;
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM core.user
+    WHERE id = '${SEEDED_ADMIN_ID}'
+      AND email = 'tim@apple.dev'
+  ) THEN
+    RETURN;
+  END IF;
+
+  UPDATE core.user
+  SET "firstName" = 'Jules',
+      "lastName" = 'Doe',
+      "email" = '${ADMIN_EMAIL}',
+      "passwordHash" = '${ADMIN_PASSWORD_HASH}'
+  WHERE id = '${SEEDED_ADMIN_ID}';
+
+  FOR workspace_schema IN
+    SELECT schema_name
+    FROM information_schema.schemata
+    WHERE schema_name LIKE 'workspace_%'
+  LOOP
+    EXECUTE format(
+      'UPDATE %I."workspaceMember" SET "userEmail" = ''${ADMIN_EMAIL}'', "nameFirstName" = ''Jules'', "nameLastName" = ''Doe'' WHERE "userId" = ''${SEEDED_ADMIN_ID}''',
+      workspace_schema
+    );
+  END LOOP;
+END
+$$;`;
+
+const swapSeededAdminCredentials = async (
+  options: TwentyServiceOptions,
+): Promise<void> => {
+  const { configuration } = options;
+
+  try {
+    await runProcessToCompletion({
+      name: 'init',
+      command: path.join(
+        configuration.paths.postgresPrefixPath,
+        'bin',
+        'psql',
+      ),
+      args: [
+        '--dbname',
+        `postgres://postgres:postgres@127.0.0.1:${configuration.postgresPort}/default`,
+        '--command',
+        buildAdminCredentialSwapSql(),
+      ],
+      cwd: configuration.paths.serverPackagePath,
+      logsPath: configuration.paths.logsPath,
+      timeoutMs: DATABASE_COMMAND_TIMEOUT_MS,
+    });
+  } catch (error) {
+    console.warn(
+      '[twenty-native] best-effort command failed: admin credential swap',
       error,
     );
   }
@@ -127,6 +204,8 @@ export const createTwentyService = (
         '--light',
       ]);
 
+      await swapSeededAdminCredentials(options);
+
       return;
     }
 
@@ -136,6 +215,8 @@ export const createTwentyService = (
       '--force',
       '--include-slow',
     ]);
+
+    await swapSeededAdminCredentials(options);
     // Same upgrade sequence as the docker init script: flush, upgrade, flush.
     await runBestEffortServerCommand(options, [
       'dist/command/command',

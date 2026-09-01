@@ -5,30 +5,26 @@ description: Connect your email and calendar accounts to Twenty.
 
 ## Connection Options
 
-### Google Account (Gmail & Google Calendar)
-1. Go to **Settings → Accounts**
-2. Click **Add account**
-3. Select **Continue with Google**
-4. Authorize Twenty to access your Gmail and Google Calendar
-5. Configure email sync settings (visibility, auto-creation) → click **Next**
-6. Configure calendar sync settings (visibility, auto-creation) → click **Add Account**
-7. Your emails and calendar events will start syncing automatically
+### Custom IMAP/SMTP/CalDAV mailbox
+New personal email connections use a custom mailbox configuration:
+1. Go to **Settings → Accounts** and click **Add account**
+2. Select **Connect via IMAP/SMTP**
+3. Enter your email address and configure IMAP for receiving and SMTP for sending
+4. Optionally configure CalDAV for calendar sync
+5. Test the connection and save
 
-### Microsoft Account (Outlook & Microsoft Calendar)
-1. Go to **Settings → Accounts**
-2. Click **Add account**
-3. Select **Continue with Microsoft**
-4. Authorize Twenty to access your Outlook and Microsoft Calendar
-5. Configure email sync settings (visibility, auto-creation) → click **Next**
-6. Configure calendar sync settings (visibility, auto-creation) → click **Add Account**
-7. Your emails and calendar events will start syncing automatically
+Google and Microsoft are not offered for new email connections. Existing Google and Microsoft accounts remain available for reading and synchronization until they are removed.
 
-### IMAP/SMTP/CalDAV Setup (Other Providers)
-For other email and calendar providers:
-1. Go to **Settings → Accounts**
-2. Configure IMAP settings to sync incoming email and SMTP settings to send email
-3. Configure CalDAV settings for calendar
-4. Test the connection
+### Resend shared email channels
+Workspace shared addresses use Resend for native sending and receiving:
+1. An administrator configures `EMAILING_DOMAIN_DRIVER=RESEND`, `RESEND_API_KEY`, `RESEND_WEBHOOK_SIGNING_SECRET`, and `INBOUND_EMAIL_DOMAIN` on the server
+2. In Twenty, open **Settings → Workspace → Communication** and choose **Add email channel**
+3. Enter the shared sender address, such as `support@example.com`
+4. Verify the sending domain using the DNS records shown by Twenty
+5. In Resend, configure Receiving for the inbound domain and point its webhook to `/webhooks/messaging/resend`
+6. Add the required MX records so replies reach Resend
+
+Messages sent from the shared channel use Resend's Email API. Replies are received through Resend Receiving, verified using the webhook signing secret, and imported into the shared channel timeline. Webhook delivery is safe to retry because received events are deduplicated by Resend email ID.
 
 <Note>
 **Self-hosting on an air-gapped or internal network**: By default, Twenty refuses outbound connections to private/internal IP addresses (SSRF protection). If your mail or calendar server runs on a local/private IP (e.g. an on-premise server on a LAN), connections to it will be blocked. To allow them, set the following environment variable on the server:
@@ -47,7 +43,7 @@ This disables safe mode for **all** outbound requests (HTTP workflow actions, we
 
 
 <Warning>
-Only true mailboxes can be connected (e.g., support@domain.com with its own inbox). Email aliases that forward to another mailbox cannot be connected to Twenty.
+Only true IMAP mailboxes can be connected as personal accounts (for example, support@domain.com with its own inbox). Email aliases that forward to another mailbox should be configured as Resend shared channels instead.
 </Warning>
 
 

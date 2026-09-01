@@ -55,6 +55,16 @@ export const STANDARD_NAVIGATION_MENU_ITEMS = {
         .universalIdentifier,
     position: 7,
   },
+  followUps: {
+    universalIdentifier: '20202020-b00c-4b0c-8b0c-c0aba11c000c',
+    type: NavigationMenuItemType.LINK,
+    name: i18nLabel(
+      msg({ message: `Follow-ups`, context: 'navigationMenuItem.name' }),
+    ),
+    icon: 'IconBell',
+    link: '/follow-ups',
+    position: 8,
+  },
   workflowsFolder: {
     universalIdentifier: '20202020-b007-4b07-8b07-c0aba11c0007',
     type: NavigationMenuItemType.FOLDER,
@@ -102,6 +112,7 @@ export const STANDARD_NAVIGATION_MENU_ITEM_DEFAULT_COLORS: Partial<
   workflowsFolder: 'orange',
   allMessageCampaigns: 'gray',
   allDashboards: 'gray',
+  followUps: 'gray',
   workflowsFolderAllWorkflows: 'gray',
   workflowsFolderAllWorkflowRuns: 'gray',
   workflowsFolderAllWorkflowVersions: 'gray',

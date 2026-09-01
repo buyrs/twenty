@@ -70,3 +70,5 @@ screenshots/
 /.diag*.mjs
 /.compare*.mjs
 /.narrow*.mjs
+
+.nx/polygraph

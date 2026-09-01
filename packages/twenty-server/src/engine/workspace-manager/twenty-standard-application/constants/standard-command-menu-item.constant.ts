@@ -1410,6 +1410,25 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
     hotKeys: null,
     payload: { path: '/settings/community' },
   },
+  goToFollowUps: {
+    universalIdentifier: '8a1d4f2e-6c3b-4d5e-9f0a-1b2c3d4e5f60',
+    label: i18nLabel(
+      msg({ message: `Go to Follow-ups`, context: 'commandMenuItem.label' }),
+    ),
+    icon: 'IconBell',
+    isPinned: false,
+    position: 71,
+    shortLabel: i18nLabel(
+      msg({ message: `Follow-ups`, context: 'commandMenuItem.shortLabel' }),
+    ),
+    availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
+    conditionalAvailabilityExpression: null,
+    availabilityObjectMetadataUniversalIdentifier: null,
+    frontComponentUniversalIdentifier: null,
+    engineComponentKey: EngineComponentKey.NAVIGATION,
+    hotKeys: null,
+    payload: { path: '/follow-ups' },
+  },
   composeEmailToPerson: {
     universalIdentifier: 'f01d4b8b-2b4e-4ae0-9c6f-0b9a9a3e5b21',
     label: i18nLabel(

@@ -1,82 +1,37 @@
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { clientConfigApiStatusState } from '@/client-config/states/clientConfigApiStatusState';
-import { isGoogleCalendarEnabledState } from '@/client-config/states/isGoogleCalendarEnabledState';
-import { isGoogleMessagingEnabledState } from '@/client-config/states/isGoogleMessagingEnabledState';
-import { isMicrosoftCalendarEnabledState } from '@/client-config/states/isMicrosoftCalendarEnabledState';
-import { isMicrosoftMessagingEnabledState } from '@/client-config/states/isMicrosoftMessagingEnabledState';
+import { isImapSmtpCaldavEnabledState } from '@/client-config/states/isImapSmtpCaldavEnabledState';
 import { onboardingConfigState } from '@/client-config/states/onboardingConfigState';
 import { SyncEmailsAutoSkipEffect } from '@/onboarding/effect-components/SyncEmailsAutoSkipEffect';
 import { useSkipSyncEmailOnboardingStep } from '@/onboarding/hooks/useSkipSyncEmailOnboardingStep';
 import { onboardingFreeCreditsState } from '@/onboarding/states/onboardingFreeCreditsState';
-import { useTriggerApisOAuth } from '@/settings/accounts/hooks/useTriggerApiOAuth';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { useCallback, useState } from 'react';
-import { AppPath, ConnectedAccountProvider } from 'twenty-shared/types';
+import { SettingsPath } from 'twenty-shared/types';
+import { getSettingsPath } from 'twenty-shared/utils';
 import { ImportContacts } from '~/pages/onboarding/ImportContacts';
-import {
-  CalendarChannelVisibility,
-  MessageChannelVisibility,
-} from '~/generated/graphql';
+import { useNavigate } from 'react-router-dom';
 
 export const SyncEmails = () => {
-  const { triggerApisOAuth } = useTriggerApisOAuth();
+  const navigate = useNavigate();
   const skipSyncEmailOnboardingStep = useSkipSyncEmailOnboardingStep();
   const setOnboardingFreeCredits = useSetAtomState(onboardingFreeCreditsState);
   const [hasAutoSkipFailed, setHasAutoSkipFailed] = useState(false);
 
-  const isGoogleMessagingEnabled = useAtomStateValue(
-    isGoogleMessagingEnabledState,
-  );
-  const isMicrosoftMessagingEnabled = useAtomStateValue(
-    isMicrosoftMessagingEnabledState,
-  );
-  const isGoogleCalendarEnabled = useAtomStateValue(
-    isGoogleCalendarEnabledState,
-  );
-  const isMicrosoftCalendarEnabled = useAtomStateValue(
-    isMicrosoftCalendarEnabledState,
-  );
-
-  const isGoogleProviderEnabled =
-    isGoogleMessagingEnabled || isGoogleCalendarEnabled;
-  const isMicrosoftProviderEnabled =
-    isMicrosoftMessagingEnabled || isMicrosoftCalendarEnabled;
-  const hasProviderEnabled =
-    isGoogleProviderEnabled || isMicrosoftProviderEnabled;
   const isClientConfigLoaded = useAtomStateValue(
     clientConfigApiStatusState,
   ).isLoadedOnce;
+  const isImapSmtpCaldavEnabled = useAtomStateValue(
+    isImapSmtpCaldavEnabledState,
+  );
   const onboardingConfig = useAtomStateValue(onboardingConfigState);
   const currentWorkspace = useAtomStateValue(currentWorkspaceState);
 
-  const isFirstWorkspaceUser = currentWorkspace?.workspaceMembersCount === 1;
-  const creditsReward = isFirstWorkspaceUser
-    ? onboardingConfig?.importContactsCreditsReward
-    : undefined;
-
-  const connectWithProvider = async (provider: ConnectedAccountProvider) => {
-    setOnboardingFreeCredits((current) => ({
-      ...current,
-      importContacts: creditsReward ?? 0,
-    }));
-
-    try {
-      await triggerApisOAuth(provider, {
-        redirectLocation: AppPath.Index,
-        messageVisibility: MessageChannelVisibility.METADATA,
-        calendarVisibility: CalendarChannelVisibility.METADATA,
-        skipMessageChannelConfiguration: true,
-      });
-    } catch (error) {
-      setOnboardingFreeCredits((current) => ({
-        ...current,
-        importContacts: 0,
-      }));
-
-      throw error;
-    }
-  };
+  const creditsReward =
+    currentWorkspace?.workspaceMembersCount === 1
+      ? onboardingConfig?.importContactsCreditsReward
+      : undefined;
 
   const handleSkip = async () => {
     await skipSyncEmailOnboardingStep({ isAutoSkipped: false });
@@ -95,21 +50,19 @@ export const SyncEmails = () => {
     return null;
   }
 
-  if (!hasProviderEnabled && !hasAutoSkipFailed) {
+  if (!isImapSmtpCaldavEnabled && !hasAutoSkipFailed) {
     return <SyncEmailsAutoSkipEffect onError={handleAutoSkipError} />;
   }
 
   return (
     <ImportContacts
       creditsReward={creditsReward}
-      onContinueWithGoogle={
-        isGoogleProviderEnabled
-          ? () => connectWithProvider(ConnectedAccountProvider.GOOGLE)
-          : undefined
-      }
-      onContinueWithMicrosoft={
-        isMicrosoftProviderEnabled
-          ? () => connectWithProvider(ConnectedAccountProvider.MICROSOFT)
+      onContinueWithImap={
+        isImapSmtpCaldavEnabled
+          ? () =>
+              navigate(
+                getSettingsPath(SettingsPath.NewImapSmtpCaldavConnection),
+              )
           : undefined
       }
       onSkip={handleSkip}

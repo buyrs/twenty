@@ -14,6 +14,7 @@ import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system
 import { InboundEmailMessageSourceResolverService } from 'src/modules/messaging/message-import-manager/drivers/inbound-email/sources/inbound-email-message-source-resolver.service';
 import { type InboundEmailImportOutcome } from 'src/modules/messaging/message-import-manager/drivers/inbound-email/types/inbound-email-import-outcome.type';
 import { type InboundEmailMessageReference } from 'src/modules/messaging/message-import-manager/drivers/inbound-email/types/inbound-email-message-reference.type';
+import { normalizeInboundEmailAddress } from 'src/modules/messaging/message-import-manager/drivers/inbound-email/utils/normalize-inbound-email-address.util';
 import { MessagingSaveMessagesAndEnqueueContactCreationService } from 'src/modules/messaging/message-import-manager/services/messaging-save-messages-and-enqueue-contact-creation.service';
 
 type ImportInboundMessageParams = {
@@ -136,7 +137,7 @@ export class InboundEmailImportService {
 
     return (
       envelopeRecipients
-        .map((address) => address.toLowerCase())
+        .map(normalizeInboundEmailAddress)
         .find((address) => address.endsWith(`@${normalizedDomain}`)) ?? null
     );
   }

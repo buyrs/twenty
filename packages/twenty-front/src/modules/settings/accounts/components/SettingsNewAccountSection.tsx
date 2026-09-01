@@ -8,7 +8,7 @@ export const SettingsNewAccountSection = () => {
     <Section>
       <H2Title
         title={t`New account`}
-        description={t`Connect a new account to your workspace`}
+        description={t`Connect a custom email account using IMAP for receiving and SMTP for sending`}
       />
       <SettingsAccountsListEmptyStateCard />
     </Section>

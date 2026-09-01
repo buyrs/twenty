@@ -26,6 +26,8 @@ import { CalendarOngoingStaleCronCommand } from 'src/modules/calendar/calendar-e
 import { CalendarRelaunchFailedCalendarChannelsCronCommand } from 'src/modules/calendar/calendar-event-import-manager/crons/commands/calendar-relaunch-failed-calendar-channels.cron.command';
 import { MessagingMessageListFetchCronCommand } from 'src/modules/messaging/message-import-manager/crons/commands/messaging-message-list-fetch.cron.command';
 import { MessagingMessagesImportCronCommand } from 'src/modules/messaging/message-import-manager/crons/commands/messaging-messages-import.cron.command';
+import { FollowUpDigestCronCommand } from 'src/modules/messaging/follow-up-queue/crons/commands/follow-up-digest.cron.command';
+import { FollowUpNudgeCronCommand } from 'src/modules/messaging/follow-up-queue/crons/commands/follow-up-nudge.cron.command';
 import { MessagingOngoingStaleCronCommand } from 'src/modules/messaging/message-import-manager/crons/commands/messaging-ongoing-stale.cron.command';
 import { MessagingRelaunchFailedMessageChannelsCronCommand } from 'src/modules/messaging/message-import-manager/crons/commands/messaging-relaunch-failed-message-channels.cron.command';
 import { WorkflowCoreConsistencyCronCommand } from 'src/modules/workflow/workflow-core-consistency/crons/commands/workflow-core-consistency-cron.command';
@@ -46,6 +48,8 @@ export class CronRegisterAllCommand extends CommandRunner {
     private readonly messagingMessageListFetchCronCommand: MessagingMessageListFetchCronCommand,
     private readonly messagingOngoingStaleCronCommand: MessagingOngoingStaleCronCommand,
     private readonly messagingRelaunchFailedMessageChannelsCronCommand: MessagingRelaunchFailedMessageChannelsCronCommand,
+    private readonly followUpNudgeCronCommand: FollowUpNudgeCronCommand,
+    private readonly followUpDigestCronCommand: FollowUpDigestCronCommand,
 
     private readonly calendarEventListFetchCronCommand: CalendarEventListFetchCronCommand,
     private readonly calendarEventsImportCronCommand: CalendarEventsImportCronCommand,
@@ -109,6 +113,14 @@ export class CronRegisterAllCommand extends CommandRunner {
       {
         name: 'MessagingRelaunchFailedMessageChannels',
         command: this.messagingRelaunchFailedMessageChannelsCronCommand,
+      },
+      {
+        name: 'FollowUpNudge',
+        command: this.followUpNudgeCronCommand,
+      },
+      {
+        name: 'FollowUpDigest',
+        command: this.followUpDigestCronCommand,
       },
       {
         name: 'CalendarEventListFetch',

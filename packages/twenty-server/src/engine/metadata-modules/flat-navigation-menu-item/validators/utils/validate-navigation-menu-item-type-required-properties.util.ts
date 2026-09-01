@@ -99,7 +99,13 @@ export const validateNavigationMenuItemTypeRequiredProperties = ({
       ];
     }
     case NavigationMenuItemType.LINK: {
-      return isDefined(link) && isValidUrl(link)
+      // App-internal routes (e.g. /follow-ups) are navigated with the in-app
+      // router, so they are valid LINK targets alongside absolute URLs.
+      const isAppInternalPath = isDefined(link) && link.startsWith('/');
+      const isValidLink =
+        isDefined(link) && (isValidUrl(link) || isAppInternalPath);
+
+      return isValidLink
         ? []
         : [
             buildInvalidInputError(

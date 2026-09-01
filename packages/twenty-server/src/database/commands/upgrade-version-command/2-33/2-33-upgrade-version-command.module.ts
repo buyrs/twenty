@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { WorkspaceIteratorModule } from 'src/database/commands/command-runners/workspace-iterator.module';
 import { BackfillActivityTargetsJunctionTargetCommand } from 'src/database/commands/upgrade-version-command/2-33/2-33-workspace-command-1787123540000-backfill-activity-targets-junction-target.command';
+import { AddFollowUpsCommandMenuItemCommand } from 'src/database/commands/upgrade-version-command/2-33/2-33-workspace-command-1787600000000-add-follow-ups-command-menu-item.command';
+import { AddFollowUpsNavigationMenuItemCommand } from 'src/database/commands/upgrade-version-command/2-33/2-33-workspace-command-1787600001000-add-follow-ups-navigation-menu-item.command';
 import { MigrateCommandMenuItemLabelsToPlaceholdersCommand } from 'src/database/commands/upgrade-version-command/2-33/2-33-workspace-command-1787127900000-migrate-command-menu-item-labels-to-placeholders.command';
 import { ReplaceTimelineActivityNameWithTypeCommand } from 'src/database/commands/upgrade-version-command/2-33/2-33-workspace-command-1787400001000-replace-timeline-activity-name-with-type.command';
 import { MarkSearchVectorFieldsSystemCommand } from 'src/database/commands/upgrade-version-command/2-33/2-33-workspace-command-1787138325228-mark-search-vector-fields-system.command';
@@ -22,6 +24,8 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
     WorkspaceMigrationModule,
   ],
   providers: [
+    AddFollowUpsCommandMenuItemCommand,
+    AddFollowUpsNavigationMenuItemCommand,
     BackfillActivityTargetsJunctionTargetCommand,
     MarkSearchVectorFieldsSystemCommand,
     MigrateCommandMenuItemLabelsToPlaceholdersCommand,

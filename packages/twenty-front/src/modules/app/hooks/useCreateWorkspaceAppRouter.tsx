@@ -130,6 +130,12 @@ const MobileHomePage = lazy(() =>
   })),
 );
 
+const FollowUpsPage = lazy(() =>
+  import('~/pages/follow-ups/FollowUpsPage').then((module) => ({
+    default: module.FollowUpsPage,
+  })),
+);
+
 const NotFound = lazy(() =>
   import('~/pages/not-found/NotFound').then((module) => ({
     default: module.NotFound,
@@ -219,6 +225,14 @@ const createWorkspaceAppRouter = ({
                 element={
                   <LazyRoute>
                     <MobileHomePage />
+                  </LazyRoute>
+                }
+              />
+              <Route
+                path={AppPath.FollowUps}
+                element={
+                  <LazyRoute>
+                    <FollowUpsPage />
                   </LazyRoute>
                 }
               />

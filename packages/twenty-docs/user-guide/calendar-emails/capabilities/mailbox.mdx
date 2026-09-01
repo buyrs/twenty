@@ -7,7 +7,11 @@ description: Understanding email integration features in Twenty.
 
 ## How Email Integration Works
 
-Twenty automatically links emails from your connected mailboxes to the relevant CRM records, keeping all communication history in one place.
+Twenty automatically links emails from your connected mailboxes to the relevant CRM records, keeping all communication history in one place. New personal mailboxes use custom IMAP/SMTP credentials; workspace shared channels use Resend for sending and receiving.
+
+### Resend shared channel flow
+
+A shared channel sends through the Resend Email API. Replies arrive through Resend Receiving at the configured inbound domain, and Resend calls Twenty's `/webhooks/messaging/resend` endpoint. Twenty verifies the Svix signature, downloads the received MIME message, matches the forwarding address to the shared channel, and imports the thread. Repeated webhook deliveries are deduplicated by the Resend email ID.
 
 ### Objects Where Emails Can Be Found
 
@@ -85,5 +89,6 @@ Control which email folders sync with Twenty:
 
 ### Email Limitations
 - **System Folders**: Some email folders may not be available for sync
-- **Aliases**: Only true mailboxes can be connected (not email aliases)
+- **Personal aliases**: Only true IMAP mailboxes can be connected as personal accounts
+- **Resend receiving**: Shared channels require a verified sending domain, Resend Receiving, MX records, and a publicly reachable signed webhook endpoint
 

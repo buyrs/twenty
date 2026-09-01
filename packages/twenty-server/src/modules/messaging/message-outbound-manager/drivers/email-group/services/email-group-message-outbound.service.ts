@@ -53,6 +53,7 @@ export class EmailGroupMessageOutboundService implements MessageOutboundDriver {
           : undefined,
         from: connectedAccount.handle,
         replyTo: [connectedAccount.handle],
+        headers: this.toMessageHeaders(sendMessageInput),
         attachments: sendMessageInput.attachments,
       },
     );
@@ -76,6 +77,24 @@ export class EmailGroupMessageOutboundService implements MessageOutboundDriver {
       'Email handle channels do not support drafts.',
       MessageChannelExceptionCode.INVALID_MESSAGE_CHANNEL_INPUT,
     );
+  }
+
+  private toMessageHeaders(
+    sendMessageInput: SendMessageInput,
+  ): { name: string; value: string }[] | undefined {
+    const headers = [
+      isNonEmptyString(sendMessageInput.inReplyTo)
+        ? { name: 'In-Reply-To', value: sendMessageInput.inReplyTo }
+        : undefined,
+      sendMessageInput.references && sendMessageInput.references.length > 0
+        ? {
+            name: 'References',
+            value: sendMessageInput.references.join(' '),
+          }
+        : undefined,
+    ].filter(isDefined);
+
+    return headers.length > 0 ? headers : undefined;
   }
 
   private async resolveEmailingDomain(

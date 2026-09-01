@@ -8,6 +8,7 @@ export * from './emails/billing-subscription-renewing.email';
 export * from './emails/billing-trial-converting.email';
 export * from './emails/billing-trial-ending.email';
 export * from './emails/clean-suspended-workspace.email';
+export * from './emails/follow-up-digest.email';
 export * from './emails/password-reset-link.email';
 export * from './emails/password-update-notify.email';
 export * from './emails/send-email-verification-link.email';

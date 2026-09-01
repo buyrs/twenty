@@ -12,9 +12,9 @@ import { ONBOARDING_CONTENT_BLOCK_WIDTH } from '@/onboarding/constants/Onboardin
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { isDefined } from 'twenty-shared/utils';
-import { IconGoogle, IconMicrosoft } from 'twenty-ui/icon';
+import { IconAt } from 'twenty-ui/icon';
 import { MainButton } from 'twenty-ui/input';
-import { themeCssVariables, useTheme } from 'twenty-ui/theme-constants';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledOnboardingStep = styled(StyledOnboardingStepPage)`
   gap: ${themeCssVariables.spacing[8]};
@@ -50,19 +50,16 @@ const StyledButtons = styled.div`
 
 type ImportContactsProps = {
   creditsReward?: number;
-  onContinueWithGoogle?: () => void;
-  onContinueWithMicrosoft?: () => void;
+  onContinueWithImap?: () => void;
   onSkip?: () => void;
 };
 
 export const ImportContacts = ({
   creditsReward,
-  onContinueWithGoogle,
-  onContinueWithMicrosoft,
+  onContinueWithImap,
   onSkip,
 }: ImportContactsProps) => {
   const { t } = useLingui();
-  const theme = useTheme();
 
   return (
     <StyledOnboardingStep>
@@ -94,20 +91,12 @@ export const ImportContacts = ({
       <OnboardingStepAnimatedItem index={4}>
         <StyledFooter>
           <StyledButtons>
-            {isDefined(onContinueWithMicrosoft) && (
+            {isDefined(onContinueWithImap) && (
               <MainButton
-                title={t`Continue with Microsoft`}
+                title={t`Connect custom email (IMAP/SMTP)`}
                 fullWidth
-                onClick={onContinueWithMicrosoft}
-                Icon={() => <IconMicrosoft size={theme.icon.size.md} />}
-              />
-            )}
-            {isDefined(onContinueWithGoogle) && (
-              <MainButton
-                title={t`Continue with Google`}
-                fullWidth
-                onClick={onContinueWithGoogle}
-                Icon={() => <IconGoogle size={theme.icon.size.md} />}
+                onClick={onContinueWithImap}
+                Icon={() => <IconAt size={20} />}
               />
             )}
           </StyledButtons>

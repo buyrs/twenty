@@ -123,3 +123,8 @@ const main = (): void => {
 };
 
 main();
+
+// The @prettier/sync worker pool keeps the event loop alive after the work is
+// done, so under Nx (which waits for the task process to exit) the task never
+// completes without an explicit exit.
+process.exit(0);

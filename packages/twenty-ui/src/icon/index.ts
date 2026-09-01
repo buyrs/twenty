@@ -331,6 +331,7 @@ export {
   IconLogout,
   IconMail,
   IconMailCog,
+  IconMailForward,
   IconMailX,
   IconMap,
   IconMathMax,

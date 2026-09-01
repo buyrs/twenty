@@ -11,6 +11,7 @@ import {
   createStandardNavigationMenuItemFolderFlatMetadata,
   createStandardNavigationMenuItemFolderItemFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/navigation-menu-item/create-standard-navigation-menu-item-folder-flat-metadata.util';
+import { createStandardNavigationMenuItemLinkFlatMetadata } from 'src/engine/workspace-manager/twenty-standard-application/utils/navigation-menu-item/create-standard-navigation-menu-item-link-flat-metadata.util';
 
 const FLAT_NAVIGATION_MENU_ITEM_NAMES = [
   'allCompanies',
@@ -113,6 +114,24 @@ export const buildStandardFlatNavigationMenuItemMaps = ({
       flatNavigationMenuItemMaps,
     });
   }
+
+  const followUpsLinkDefinition = STANDARD_NAVIGATION_MENU_ITEMS.followUps;
+  const followUpsLink = createStandardNavigationMenuItemLinkFlatMetadata({
+    universalIdentifier: followUpsLinkDefinition.universalIdentifier,
+    name: followUpsLinkDefinition.name,
+    icon: followUpsLinkDefinition.icon,
+    link: followUpsLinkDefinition.link,
+    position: followUpsLinkDefinition.position,
+    navigationMenuItemId: v4(),
+    workspaceId,
+    twentyStandardApplicationId,
+    now,
+  });
+
+  addFlatNavigationMenuItemToMapsAndUpdateIndex({
+    flatNavigationMenuItem: followUpsLink,
+    flatNavigationMenuItemMaps,
+  });
 
   return flatNavigationMenuItemMaps;
 };

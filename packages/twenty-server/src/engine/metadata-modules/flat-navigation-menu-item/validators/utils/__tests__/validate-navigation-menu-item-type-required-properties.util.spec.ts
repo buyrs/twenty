@@ -111,6 +111,10 @@ describe('validateNavigationMenuItemTypeRequiredProperties', () => {
       overrides: { link: 'https://twenty.com' },
     },
     {
+      type: NavigationMenuItemType.LINK,
+      overrides: { link: '/follow-ups' },
+    },
+    {
       type: NavigationMenuItemType.PAGE_LAYOUT,
       overrides: { pageLayoutUniversalIdentifier: VALID_UUID },
     },

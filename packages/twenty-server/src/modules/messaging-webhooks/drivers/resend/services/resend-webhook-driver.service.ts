@@ -108,8 +108,8 @@ export class ResendWebhookDriverService {
       );
     }
 
-    // received_for carries the envelope recipients; to/cc cover mail
-    // delivered through aliases or group expansion
+    // received_for carries envelope recipients; to/cc cover aliases and
+    // group expansion supported by Resend Receiving.
     const recipients = [
       ...(event.data?.received_for ?? []),
       ...(event.data?.to ?? []),

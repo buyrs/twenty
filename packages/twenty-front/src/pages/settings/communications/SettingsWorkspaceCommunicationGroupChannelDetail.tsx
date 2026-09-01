@@ -229,6 +229,12 @@ export const SettingsWorkspaceCommunicationGroupChannelDetail = () => {
             />
           </StyledForwardingRow>
         </Section>
+        <Section>
+          <H2Title
+            title={t`Resend receiving`}
+            description={t`Configure Resend Receiving for your inbound domain and point its webhook to /webhooks/messaging/resend. Resend verifies the webhook signature, then Twenty imports the message and links it to this shared channel.`}
+          />
+        </Section>
         {isNonEmptyString(channel.displayName) && (
           <Section>
             <H2Title

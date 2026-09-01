@@ -105,6 +105,12 @@ export const SettingsAccountsNewEmailGroupChannel = () => {
             disabled={loading}
           />
         </Section>
+        <Section>
+          <H2Title
+            title={t`Resend connection`}
+            description={t`Shared email channels use the workspace Resend configuration for sending and receiving. An administrator must configure RESEND_API_KEY, RESEND_WEBHOOK_SIGNING_SECRET, and INBOUND_EMAIL_DOMAIN on the server before creating a channel.`}
+          />
+        </Section>
       </SettingsPageContainer>
     </SettingsPageLayout>
   );

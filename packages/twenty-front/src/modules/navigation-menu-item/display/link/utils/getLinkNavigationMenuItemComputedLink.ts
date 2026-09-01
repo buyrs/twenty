@@ -7,5 +7,9 @@ export const getLinkNavigationMenuItemComputedLink = (
   if (linkUrl.startsWith('http://') || linkUrl.startsWith('https://')) {
     return linkUrl;
   }
+  // App-internal paths (e.g. /follow-ups) are navigated with the in-app router.
+  if (linkUrl.startsWith('/')) {
+    return linkUrl;
+  }
   return linkUrl ? `https://${linkUrl}` : '';
 };
